@@ -8,6 +8,6 @@ namespace UrlShrt.Dtos
     public class UrlItemViewDto
     {
         public string ShortUrl { get; set; }
-        public string RedirectTo { get; set; }
+        public string RedirectUrl { get; set; }
     }
 }
