@@ -7,23 +7,23 @@ namespace UrlShrt.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Urls",
+                name: "UrlItems",
                 columns: table => new
                 {
                     Slug = table.Column<string>(nullable: false),
-                    Uri = table.Column<string>(maxLength: 512, nullable: false),
+                    RedirectUrl = table.Column<string>(maxLength: 512, nullable: false),
                     Clicks = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Urls", x => x.Slug);
+                    table.PrimaryKey("PK_UrlItems", x => x.Slug);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Urls");
+                name: "UrlItems");
         }
     }
 }

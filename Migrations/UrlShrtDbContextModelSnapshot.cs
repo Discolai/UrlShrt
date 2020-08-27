@@ -18,7 +18,7 @@ namespace UrlShrt.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("UrlShrt.Models.Url", b =>
+            modelBuilder.Entity("UrlShrt.Models.UrlItem", b =>
                 {
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(450)");
@@ -26,14 +26,14 @@ namespace UrlShrt.Migrations
                     b.Property<long>("Clicks")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Uri")
+                    b.Property<string>("RedirectUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(512)")
                         .HasMaxLength(512);
 
                     b.HasKey("Slug");
 
-                    b.ToTable("Urls");
+                    b.ToTable("UrlItems");
                 });
 #pragma warning restore 612, 618
         }

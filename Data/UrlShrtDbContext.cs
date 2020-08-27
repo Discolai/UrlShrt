@@ -9,7 +9,7 @@ namespace UrlShrt.Data
 {
     public class UrlShrtDbContext : DbContext
     {
-        public DbSet<Url> Urls { get; set; }
+        public DbSet<UrlItem> UrlItems { get; set; }
         public UrlShrtDbContext(DbContextOptions<UrlShrtDbContext> options) : base(options) { }
     }
 }
