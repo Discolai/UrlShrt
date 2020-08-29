@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UrlShrt.Controllers;
 using UrlShrt.Dtos;
+using UrlShrt.Helpers;
 using UrlShrt.Models;
 
 namespace UrlShrt.Profiles
@@ -32,7 +33,7 @@ namespace UrlShrt.Profiles
 
         public string Resolve(UrlItem source, UrlItemViewDto destination, string destMember, ResolutionContext context)
         {
-            return _httpContextAccessor.HttpContext.Request.GetDisplayUrl() + source.Slug;
+            return UrlHelper.Combine(_httpContextAccessor.HttpContext.Request.GetDisplayUrl(), source.Slug);
         }
     }
 }
