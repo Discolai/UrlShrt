@@ -40,7 +40,7 @@ namespace UrlShrt.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UrlItemViewDto>> CreateUrlItem(UrlItemCreateDto createDto)
+        public async Task<ActionResult<UrlItemViewDto>> CreateUrlItemAsync(UrlItemCreateDto createDto)
         {
             // Generate an alphanumerical slug
             if (createDto.Slug == null)
@@ -66,18 +66,23 @@ namespace UrlShrt.Controllers
             _context.UrlItems.Add(urlItem);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<UrlItemViewDto>(urlItem);
+            var viewDto = _mapper.Map<UrlItemViewDto>(urlItem);
+            _logger.LogInformation("{method}: {shortUrl} -> {redirectUrl}, {time} UTC", nameof(CreateUrlItemAsync), viewDto.ShortUrl, viewDto.RedirectUrl, DateTime.UtcNow);
+
+            return viewDto;
         }
 
         [HttpGet("{slug}")]
-        public async Task<ActionResult> RedirectFromShortUrl(string slug)
+        public async Task<ActionResult> RedirectFromShortUrlAsync(string slug)
         {
             var urlItem = await _context.UrlItems.SingleOrDefaultAsync(u => u.Slug == slug);
             if (urlItem == null) return NotFound();
 
             urlItem.Clicks++;
             await _context.SaveChangesAsync();
-                
+
+            _logger.LogInformation("{method}: {shortUrl} -> {redirectUrl}, {time} UTC", nameof(RedirectFromShortUrlAsync), Request.GetEncodedUrl(), urlItem.RedirectUrl, DateTime.UtcNow);
+
             return Redirect(urlItem.RedirectUrl);
         }
     }
