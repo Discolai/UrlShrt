@@ -16,6 +16,7 @@ using UrlShrt.Data;
 using UrlShrt.Dtos;
 using UrlShrt.Helpers;
 using UrlShrt.Models;
+using UrlShrt.Services;
 
 namespace UrlShrt.Controllers
 {
@@ -28,14 +29,14 @@ namespace UrlShrt.Controllers
         private readonly UrlShrtDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<UrlItemController> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly ISlugConfiguration _slugConfiguration;
 
-        public UrlItemController(UrlShrtDbContext context, IMapper mapper, ILogger<UrlItemController> logger, IConfiguration configuration)
+        public UrlItemController(UrlShrtDbContext context, IMapper mapper, ILogger<UrlItemController> logger, ISlugConfiguration slugConfiguration)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
-            _configuration = configuration;
+            _slugConfiguration = slugConfiguration;
         }
 
         [HttpPost]
@@ -45,19 +46,19 @@ namespace UrlShrt.Controllers
             if (createDto.Slug == null)
             {
                 string slug;
-                int length = ConfigurationHelper.SlugLenght(_configuration, _logger);
-
                 do
                 {
-                    slug = RandomHelper.NextAlphanumeric(length);
+                    slug = RandomHelper.NextAlphanumeric(_slugConfiguration.Length);
                 } while (await _context.UrlItems.AnyAsync(u => u.Slug == slug));
                 
                 createDto.Slug = slug;
             }
+
             // Check for duplicates
             else if (await _context.UrlItems.AnyAsync(u => u.Slug == createDto.Slug))
             {
-                return Conflict();
+                ModelState.AddModelError("Slug", "The slug must be unique");
+                return ValidationProblem(modelStateDictionary: ModelState, statusCode: 409);
             }
 
             var urlItem = _mapper.Map<UrlItem>(createDto);

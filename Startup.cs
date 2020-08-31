@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UrlShrt.Data;
+using UrlShrt.Services;
 
 namespace UrlShrt
 {
@@ -33,6 +34,7 @@ namespace UrlShrt
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddScoped<ISlugConfiguration, SlugConfiguration>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
