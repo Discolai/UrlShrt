@@ -9,7 +9,7 @@ using UrlShrt.Data;
 namespace UrlShrt.Migrations
 {
     [DbContext(typeof(UrlShrtDbContext))]
-    [Migration("20200827180914_InitialMigration")]
+    [Migration("20200901080436_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,8 @@ namespace UrlShrt.Migrations
             modelBuilder.Entity("UrlShrt.Models.UrlItem", b =>
                 {
                     b.Property<string>("Slug")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<long>("Clicks")
                         .HasColumnType("bigint");

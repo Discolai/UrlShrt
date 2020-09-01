@@ -21,7 +21,8 @@ namespace UrlShrt.Migrations
             modelBuilder.Entity("UrlShrt.Models.UrlItem", b =>
                 {
                     b.Property<string>("Slug")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<long>("Clicks")
                         .HasColumnType("bigint");

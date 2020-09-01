@@ -10,7 +10,7 @@ namespace UrlShrt.Migrations
                 name: "UrlItems",
                 columns: table => new
                 {
-                    Slug = table.Column<string>(nullable: false),
+                    Slug = table.Column<string>(maxLength: 10, nullable: false),
                     RedirectUrl = table.Column<string>(maxLength: 512, nullable: false),
                     Clicks = table.Column<long>(nullable: false)
                 },
