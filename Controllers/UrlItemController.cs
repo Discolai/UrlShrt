@@ -43,7 +43,7 @@ namespace UrlShrt.Controllers
         public async Task<ActionResult<UrlItemViewDto>> CreateUrlItemAsync(UrlItemCreateDto createDto)
         {
             // Generate an alphanumerical slug
-            if (createDto.Slug == null)
+            if (string.IsNullOrEmpty(createDto.Slug))
             {
                 string slug;
                 do
