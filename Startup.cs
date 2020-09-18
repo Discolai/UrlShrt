@@ -49,7 +49,7 @@ namespace UrlShrt
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UrlShrtDbContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UrlShrtDbContext context, ILogger<Startup> logger, Microsoft.Extensions.Hosting.IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -70,7 +70,30 @@ namespace UrlShrt
                 endpoints.MapControllers();
             });
 
-            context.Database.Migrate();
+            var retries = 5;
+            var delayMs = 5000;
+            for (int i = 0; i < retries; i++)
+            {
+                try
+                {
+                    context.Database.Migrate();
+                    break;
+                }
+                catch (Microsoft.Data.SqlClient.SqlException ex)
+                {
+                    if (i == retries - 1)
+                    {
+                        logger.LogError(ex, "Migration failed {retries}/{max_retries}. shutting down, {time} UTC", i + 1, retries, DateTime.UtcNow);
+                        applicationLifetime.StopApplication();
+                    }
+                    else
+                    {
+                        logger.LogWarning("Migration failed on attempt {retries}/{max_retries}. Delaying exection for {delayMs} ms, {time} UTC", i + 1, retries, delayMs, DateTime.UtcNow);
+                    }
+                }
+                Task.Delay(delayMs);
+
+            }
         }
     }
 }
