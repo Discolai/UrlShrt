@@ -40,7 +40,7 @@ namespace UrlShrt.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UrlItemViewDto>> CreateUrlItemAsync(UrlItemCreateDto createDto)
+        public async Task<ActionResult> CreateUrlItemAsync(UrlItemCreateDto createDto)
         {
             // Generate an alphanumerical slug
             if (string.IsNullOrEmpty(createDto.Slug))
@@ -58,7 +58,7 @@ namespace UrlShrt.Controllers
             else if (await _context.UrlItems.AnyAsync(u => u.Slug == createDto.Slug))
             {
                 ModelState.AddModelError("Slug", "The slug must be unique");
-                return ValidationProblem(modelStateDictionary: ModelState, statusCode: 409);
+                return CommonResponse.CreateResponse(modelState: ModelState);
             }
 
             var urlItem = _mapper.Map<UrlItem>(createDto);
@@ -69,14 +69,19 @@ namespace UrlShrt.Controllers
             var viewDto = _mapper.Map<UrlItemViewDto>(urlItem);
             _logger.LogInformation("{method}: {shortUrl} -> {redirectUrl}, {time} UTC", nameof(CreateUrlItemAsync), viewDto.ShortUrl, viewDto.RedirectUrl, DateTime.UtcNow);
 
-            return viewDto;
+            return CommonResponse.CreateResponse(data: viewDto, errors: null);
+
         }
 
         [HttpGet("{slug}")]
         public async Task<ActionResult> RedirectFromShortUrlAsync(string slug)
         {
             var urlItem = await _context.UrlItems.SingleOrDefaultAsync(u => u.Slug == slug);
-            if (urlItem == null) return NotFound();
+            if (urlItem == null)
+            {
+                ModelState.AddModelError("slug", $"Could not find ${slug}");
+                return CommonResponse.CreateResponse(modelState: ModelState, status: 404);
+            }
 
             urlItem.Clicks++;
             await _context.SaveChangesAsync();
