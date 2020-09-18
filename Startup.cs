@@ -43,14 +43,13 @@ namespace UrlShrt
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {
-                    //var problemDetails = new ValidationProblemDetails(context.ModelState) { Status = (int)HttpStatusCode.BadRequest };
                     return CommonResponse.CreateResponse(modelState: context.ModelState, status: (int)HttpStatusCode.BadRequest);
                 };
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UrlShrtDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -70,6 +69,8 @@ namespace UrlShrt
             {
                 endpoints.MapControllers();
             });
+
+            context.Database.Migrate();
         }
     }
 }
