@@ -70,7 +70,7 @@ namespace UrlShrt
                 endpoints.MapControllers();
             });
 
-            var retries = 5;
+            var retries = 10;
             var delayMs = 5000;
             for (int i = 0; i < retries; i++)
             {
@@ -84,7 +84,7 @@ namespace UrlShrt
                     if (i == retries - 1)
                     {
                         logger.LogError(ex, "Migration failed {retries}/{max_retries}. shutting down, {time} UTC", i + 1, retries, DateTime.UtcNow);
-                        applicationLifetime.StopApplication();
+                        //applicationLifetime.StopApplication();
                     }
                     else
                     {
