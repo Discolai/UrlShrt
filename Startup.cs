@@ -54,12 +54,12 @@ namespace UrlShrt
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             }
             else
             {
                 app.UseExceptionHandler("/error");
             }
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
 
@@ -84,7 +84,7 @@ namespace UrlShrt
                     if (i == retries - 1)
                     {
                         logger.LogError(ex, "Migration failed {retries}/{max_retries}. shutting down, {time} UTC", i + 1, retries, DateTime.UtcNow);
-                        //applicationLifetime.StopApplication();
+                        applicationLifetime.StopApplication();
                     }
                     else
                     {
