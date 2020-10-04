@@ -35,7 +35,8 @@ namespace UrlShrt.Profiles
         public string Resolve(UrlItem source, UrlItemViewDto destination, string destMember, ResolutionContext context)
         {
             var uri = new Uri(_httpContextAccessor.HttpContext.Request.GetDisplayUrl());
-            var host = uri.IsDefaultPort ? uri.Host : $"{uri.Host}:{uri.Port}";
+            //var host = uri.IsDefaultPort ? uri.Host : $"{uri.Host}:{uri.Port}";
+            var host = uri.GetLeftPart(UriPartial.Authority);
 
             return UrlHelper.Combine(host, UrlItemController.ShortUrlRoot, source.Slug);
         }
@@ -53,7 +54,7 @@ namespace UrlShrt.Profiles
         public string Resolve(UrlItem source, AnalyticsViewDto destination, string destMember, ResolutionContext context)
         {
             var uri = new Uri(_httpContextAccessor.HttpContext.Request.GetDisplayUrl());
-            var host = uri.IsDefaultPort ? uri.Host : $"{uri.Host}:{uri.Port}";
+            var host = uri.GetLeftPart(UriPartial.Authority);
 
             return UrlHelper.Combine(host, UrlItemController.ShortUrlRoot, source.Slug);
         }
