@@ -69,7 +69,7 @@ namespace UrlShrt.Controllers
             var viewDto = _mapper.Map<UrlItemViewDto>(urlItem);
             _logger.LogInformation("{method}: {shortUrl} -> {redirectUrl}, {time} UTC", nameof(CreateUrlItemAsync), viewDto.ShortUrl, viewDto.RedirectUrl, DateTime.UtcNow);
 
-            return CommonResponse.CreateResponse(data: viewDto, errors: null);
+            return CommonResponse.CreateResponse(data: viewDto);
 
         }
 

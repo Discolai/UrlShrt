@@ -20,10 +20,10 @@ namespace UrlShrt.Dtos
         }
         public CommonResponse(ModelStateDictionary modelState) : this(new ValidationProblemDetails(modelState)) { }
 
-        public static ObjectResult CreateResponse(object data = null, IDictionary<string, string[]> errors = null, int status = 200)
-        {
-            return new ObjectResult(new CommonResponse() { Data = data, Errors = errors, Status = status }) { StatusCode = status };
-        }
+        //public static ObjectResult CreateResponse(object data = null, IDictionary<string, string[]> errors = null, int status = 200)
+        //{
+        //    return new ObjectResult(new CommonResponse() { Data = data, Errors = errors, Status = status }) { StatusCode = status };
+        //}
 
         public static ObjectResult CreateResponse(object data = null, ModelStateDictionary modelState = null, int status = 200)
         {

@@ -17,23 +17,45 @@ namespace UrlShrt.Profiles
         public UrlItemProfile()
         {
             CreateMap<UrlItemCreateDto, UrlItem>();
-            CreateMap<UrlItem, UrlItemViewDto>().ForMember(dest => dest.ShortUrl, source => source.MapFrom<ShortUrlResolver>());
+            CreateMap<UrlItem, UrlItemViewDto>().ForMember(dest => dest.ShortUrl, source => source.MapFrom<ShortUrlResolverUrlItem>());
+            CreateMap<UrlItem, AnalyticsViewDto>().ForMember(dest => dest.ShortUrl, source => source.MapFrom<ShortUrlResolverAnalytics>());
         }
     }
 
 
-    public class ShortUrlResolver : IValueResolver<UrlItem, UrlItemViewDto, string>
+    public class ShortUrlResolverUrlItem : IValueResolver<UrlItem, UrlItemViewDto, string>
     {
         private IHttpContextAccessor _httpContextAccessor;
 
-        public ShortUrlResolver(IHttpContextAccessor httpContextAccessor)
+        public ShortUrlResolverUrlItem(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
         public string Resolve(UrlItem source, UrlItemViewDto destination, string destMember, ResolutionContext context)
         {
-            return UrlHelper.Combine(_httpContextAccessor.HttpContext.Request.GetDisplayUrl(), source.Slug);
+            var uri = new Uri(_httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+            var host = uri.IsDefaultPort ? uri.Host : $"{uri.Host}:{uri.Port}";
+
+            return UrlHelper.Combine(host, UrlItemController.ShortUrlRoot, source.Slug);
+        }
+    }
+
+    public class ShortUrlResolverAnalytics: IValueResolver<UrlItem, AnalyticsViewDto, string>
+    {
+        private IHttpContextAccessor _httpContextAccessor;
+
+        public ShortUrlResolverAnalytics(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public string Resolve(UrlItem source, AnalyticsViewDto destination, string destMember, ResolutionContext context)
+        {
+            var uri = new Uri(_httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+            var host = uri.IsDefaultPort ? uri.Host : $"{uri.Host}:{uri.Port}";
+
+            return UrlHelper.Combine(host, UrlItemController.ShortUrlRoot, source.Slug);
         }
     }
 }
